@@ -1,9 +1,12 @@
 유튜브 악플 신고 크롬 확장프로그램
 
 ```
-help@nedx.me 1234 
+Test ID : help@nedx.me 1234
+DB address : https://nedx-admin.vercel.app/
 ```
 
+# chrome.tabs
+# chrome.storage
 # chrome.scripting
 Use the chrome.scripting API to execute script in different contexts.
 ```js
