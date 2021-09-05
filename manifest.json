@@ -1,0 +1,25 @@
+{
+    "name": "악플대응 에이전트, NedX",
+    "description": "유튜브 악플 신고",
+    "version": "1.0.0",
+    "icons": {
+        "16": "./images/16.png",
+        "48" : "./images/48.png",
+        "128" : "./images/128.png"
+    },
+    "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
+    "permissions": [
+        "activeTab",
+        "downloads",
+        "scripting",
+        "storage",
+        "tabs",
+        "unlimitedStorage"
+    ],
+    "action": {
+        "default_popup": "popup.html"
+    }
+}
