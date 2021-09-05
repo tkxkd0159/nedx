@@ -53,7 +53,6 @@ function loginPage() {
     `;
 
   document.body.innerHTML = content;
-  window.localStorage.setItem('myCat', 'Tom');
   new Promise((resolve) => {
     chrome.storage.sync.get("saveEmailState", ({ saveEmailState }) => {
       resolve(saveEmailState);
