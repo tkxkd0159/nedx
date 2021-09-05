@@ -252,116 +252,118 @@ function completePage() {
 
 function createReportButton() {
   const rows = document.querySelectorAll("#toolbar");
-
   if (rows.length === 0) {
     return;
   }
 
   rows.forEach((row, index) => {
-    if (row.nextElementSibling.nodeName !== "STYLE") {
-      row.insertAdjacentHTML(
-        "afterend",
-        `
-        <style>
-        .report {
-          width: 90px;
-          height: 40px;
-          cursor: pointer;
-          background-color: #FF5733;
-          border: none;
-          border-radius: 10px;
-          color: #FFF;
-          font-size: 16px;
-          font-weight: 700;
-          transition: font-size 0.2s;
-        }
-        .report:hover {
-          font-size: 17px;
-          color: #000;
-        }
-        </style>
-        <button id="report-${index}" class="report" data-id="${index}">신고하기</button>`
-      );
-
-      document.getElementById(`report-${index}`).addEventListener("click", () => {
-        rows.forEach((_, index) => {
-          document.getElementById(`report-${index}`).remove();
-        });
-
-        const component = row.parentElement.parentElement;
-        const writerId = component.querySelector("#author-text").text.trim();
-        let writtenAt = component.querySelector("a.yt-formatted-string.yt-simple-endpoint").text.trim();
-        let text = "";
-        // 댓글 더보기 없는 경우
-        text += component.querySelector("#content-text").textContent.trim();
-        // 댓글 여러줄 (더보기 있는 경우)
-        if (text === "") {
-          component
-            .querySelector("#content-text")
-            .querySelectorAll("span")
-            .forEach((it) => {
-              if (it.textContent.trim() !== "") {
-                text += `${it.textContent.trim()}\n`;
-              }
-            });
-        }
-
-        const diff = writtenAt.replace(/[^0-9]/g, "");
-        const date = new Date();
-        if (writtenAt.includes("초") || writtenAt.includes("second")) {
-          writtenAt = new Date(date.setSeconds(date.getSeconds() - diff)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("분") || writtenAt.includes("minute")) {
-          writtenAt = new Date(date.setMinutes(date.getMinutes() - diff)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("시간") || writtenAt.includes("hour")) {
-          writtenAt = new Date(date.setHours(date.getHours() - diff)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("일") || writtenAt.includes("day")) {
-          writtenAt = new Date(date.setDate(date.getDate() - diff)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("주") || writtenAt.includes("week")) {
-          writtenAt = new Date(date.setDate(date.getDate() - diff * 7)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("월") || writtenAt.includes("month")) {
-          writtenAt = new Date(date.setMonth(date.getMonth() - diff)).toISOString().split("T")[0];
-        } else if (writtenAt.includes("년") || writtenAt.includes("year")) {
-          writtenAt = new Date(date.setFullYear(date.getFullYear() - diff)).toISOString().split("T")[0];
-        }
-
-        chrome.storage.local.set({ writerId: writerId }, () => {});
-        chrome.storage.local.set({ text: text }, () => {});
-        chrome.storage.local.set({ writtenAt: writtenAt }, () => {});
-
+    let elem = row.nextElementSibling.nextElementSibling
+      if (elem === null || (elem !== null && elem.className !== "report")) {
         row.insertAdjacentHTML(
           "afterend",
           `
           <style>
-          .captureTitle {
-            width: 100%;
+          .report {
+            width: 90px;
             height: 40px;
-            margin: 4px 0;
-            background-color: #000;
+            cursor: pointer;
+            background-color: #FF5733;
+            border: none;
+            border-radius: 10px;
+            color: #FFF;
             font-size: 16px;
             font-weight: 700;
-            color: #FFF;
-            display: flex;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            transition: font-size 0.2s;
+          }
+          .report:hover {
+            font-size: 17px;
+            color: #000;
           }
           </style>
-          <div class="captureTitle">위 내용을 악플 증거자료로 박제하였습니다. - NedX</div>`
+          <button id="report-${index}" class="report" data-id="${index}">신고하기</button>`
         );
 
-        chrome.runtime.sendMessage(
-          {
-            messageType: "TAKE_SCREENSHOT",
-          },
-          function () {
-            // console.log(response);
-            // document.body.innerHTML = `<img src="${response}"/>`
-            alert("처리 되었습니다. 확장 프로그램을 다시 실행해주세요.");
+        document.getElementById(`report-${index}`).addEventListener("click", () => {
+          rows.forEach((_, index) => {
+            document.getElementById(`report-${index}`).remove();
+          });
+
+          const component = row.parentElement.parentElement;
+          const writerId = component.querySelector("#author-text").text.trim();
+          let writtenAt = component.querySelector("a.yt-formatted-string.yt-simple-endpoint").text.trim();
+          let text = "";
+          // 댓글 더보기 없는 경우
+          text += component.querySelector("#content-text").textContent.trim();
+          // 댓글 여러줄 (더보기 있는 경우)
+          if (text === "") {
+            component
+              .querySelector("#content-text")
+              .querySelectorAll("span")
+              .forEach((it) => {
+                if (it.textContent.trim() !== "") {
+                  text += `${it.textContent.trim()}\n`;
+                }
+              });
           }
-        );
-      });
+
+          const diff = writtenAt.replace(/[^0-9]/g, "");
+          const date = new Date();
+          if (writtenAt.includes("초") || writtenAt.includes("second")) {
+            writtenAt = new Date(date.setSeconds(date.getSeconds() - diff)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("분") || writtenAt.includes("minute")) {
+            writtenAt = new Date(date.setMinutes(date.getMinutes() - diff)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("시간") || writtenAt.includes("hour")) {
+            writtenAt = new Date(date.setHours(date.getHours() - diff)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("일") || writtenAt.includes("day")) {
+            writtenAt = new Date(date.setDate(date.getDate() - diff)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("주") || writtenAt.includes("week")) {
+            writtenAt = new Date(date.setDate(date.getDate() - diff * 7)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("월") || writtenAt.includes("month")) {
+            writtenAt = new Date(date.setMonth(date.getMonth() - diff)).toISOString().split("T")[0];
+          } else if (writtenAt.includes("년") || writtenAt.includes("year")) {
+            writtenAt = new Date(date.setFullYear(date.getFullYear() - diff)).toISOString().split("T")[0];
+          }
+
+          chrome.storage.local.set({ writerId: writerId }, () => {});
+          chrome.storage.local.set({ text: text }, () => {});
+          chrome.storage.local.set({ writtenAt: writtenAt }, () => {});
+
+          row.insertAdjacentHTML(
+            "afterend",
+            `
+            <style>
+            .captureTitle {
+              width: 100%;
+              height: 40px;
+              margin: 4px 0;
+              background-color: #000;
+              font-size: 16px;
+              font-weight: 700;
+              color: #FFF;
+              display: flex;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+            </style>
+            <div class="captureTitle">위 내용을 악플 증거자료로 박제하였습니다. - NedX</div>`
+          );
+
+          chrome.runtime.sendMessage(
+            {
+              messageType: "TAKE_SCREENSHOT",
+            },
+            function () {
+              // console.log(response);
+              // document.body.innerHTML = `<img src="${response}"/>`
+              alert("처리 되었습니다. 확장 프로그램을 다시 실행해주세요.");
+            }
+          );
+        });
+      }
     }
-  });
+
+  );
 }
 
 function commentsReport() {

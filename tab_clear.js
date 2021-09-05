@@ -36,8 +36,10 @@ async function checkState(){
 
 function removeNedElement(){
     let group = document.querySelectorAll('.captureTitle,.report')
-    for (let elem of group) {
-        console.log(elem.parentNode.removeChild(elem));
+    if (group) {
+        for (let elem of group) {
+            elem.parentNode.removeChild(elem);
+        }
     }
     return 0
 }
