@@ -256,8 +256,16 @@ function createReportButton() {
   }
 
   rows.forEach((row, index) => {
+    let gen_more = false;
     let elem = row.nextElementSibling.nextElementSibling
-      if (elem === null || (elem !== null && elem.className !== "report")) {
+    if (elem !== null) {
+      class_list = elem.className.split(" ")
+      gen_more = true
+      if (class_list.includes('report') || class_list.includes('captureTitle')) {
+        gen_more = false
+      }
+    }
+      if (elem === null || gen_more) {
         row.insertAdjacentHTML(
           "afterend",
           `
@@ -284,7 +292,11 @@ function createReportButton() {
 
         document.getElementById(`report-${index}`).addEventListener("click", () => {
           rows.forEach((_, index) => {
-            document.getElementById(`report-${index}`).remove();
+            try {
+              document.getElementById(`report-${index}`).remove();
+            }
+            catch {
+            }
           });
 
           const component = row.parentElement.parentElement;
